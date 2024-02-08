@@ -6,6 +6,46 @@ existe_pob = False
 existe_var = False
 existe_muestra = False 
 existe_varianza = False
+existe_name_var = False
+existe_tabla = False
+
+def calcular_repeticiones(poblacion):
+    unico = set(poblacion)
+    repeticiones_dict = {}
+    acum_rep = 0 
+    for elemento in unico:
+        repeticiones = poblacion.count(elemento)
+        print(f"El número {elemento} se repite {repeticiones} veces en la población.")
+        repeticiones_dict[elemento] = repeticiones
+        acum_rep += repeticiones
+        time.sleep(0.5)
+    return repeticiones_dict, acum_rep
+
+def imprimir_tabla(repeticiones_dict, acum_rep):
+        print("\n\t---------------------------------------------------------------------------------------------------------------")
+        print("\t|  Categoria  |  Frecuencia absoluta  |  Frecuencia acumulada  |  Frecuencia relativa  |  Relativa acumulada  |")
+        print("\t---------------------------------------------------------------------------------------------------------------")
+        acum = 0
+        rela_acum = 0
+        for elemento, repe in repeticiones_dict.items():
+            acum += repe
+            rela_acum += (repe/acum_rep)
+        # Imprimir fila de la tabla con formato ajustado
+            print(f"\t|     {elemento:<6}  |          {repe:<12} |          {acum:<13} |  {(repe/acum_rep):<20} |  {rela_acum:<19} |")
+            print("\t---------------------------------------------------------------------------------------------------------------")
+        print("\n")
+        time.sleep(8)
+
+def calcular_y_mostrar_tabla(poblacion):
+    repeticiones_dict, acum_rep = calcular_repeticiones(poblacion)
+    imprimir_tabla(repeticiones_dict, acum_rep)
+
+def calcular_varianza_ponderada(poblacion, frecuencias):
+    media = sum(x * f for x, f in zip(poblacion, frecuencias)) / sum(frecuencias)
+    suma_cuadrados_ponderados = sum((x - media) ** 2 * f for x, f in zip(poblacion, frecuencias))
+    varianza_ponderada = suma_cuadrados_ponderados / (sum(frecuencias) - 1)
+    return varianza_ponderada
+
 while True:
     
     print("\n--------------------------------------------------------")
@@ -21,6 +61,8 @@ while True:
     print("[+] 7. Graficos")
     print("[+] 8. Medidas de tendencia central.(Media/Mediana/Moda)")
     print("[+] 9. Medidas de dispersión.(Varianza/Desviación_estandar)")
+    print("[+] 10. Nombre de la variable")
+    print("[+] 11. Resumen (necesario pasar por todos los modulos)")
     print("[+] 0. Salir.")
 
     opcion = input("\nIngresa una opción: ")
@@ -50,7 +92,6 @@ while True:
                 poblacion_tuple = eval(entrada)
                 poblacion = list(poblacion_tuple)
                 existe_pob = True
-                time.sleep(3)
         elif opcion == '2':
 
             if existe_pob:
@@ -113,6 +154,9 @@ while True:
                     time.sleep(3)
         
         elif opcion == '5':
+            print("\n[+] Opción 5: Muestre el tipo de variable")
+            print("---------------------------------------------------\n")
+
             if existe_var:
                 print(f"[*] La variable es: {var}, {espe}")
                 time.slee(4)
@@ -121,14 +165,14 @@ while True:
                 time.sleep(3)
 
         elif opcion == '6':
-            if existe_pob:
-                unico = set(poblacion)
-                for elemento in unico:
-                    repeticiones = poblacion.count(elemento)
-                    print(f"El número {elemento} se repite {repeticiones} veces en la población.")
-                    time.sleep(6)
-                    #for elemento, cantidad in frecuencia.items():
-                    #print(f"{elemento}: {cantidad} veces."
+            if existe_pob:            
+                print("\n[+] Opción 6: Mostrando la tabla de frecuencia")
+                print("---------------------------------------------------\n")
+                calcular_y_mostrar_tabla(poblacion)
+                existe_tabla = True
+            else:
+                print("[!] No existe el valor de poblacion para tabular.")
+
         elif opcion == '7':
             pass
         elif opcion == '8':
@@ -192,22 +236,30 @@ while True:
                     if submenu2 == '1':  
                         print("\n[+] Opción 1: Varianza")
                         print("--------------------------------------------------------\n")
-                        if existe_pob and existe_muestra:
-                            suma_cuadrados = sum((x - media) ** 2 for x in muestra)
-                            varianza = suma_cuadrados/len(muestra)
-                            print(f"[*] La varianza de la muestra es: {varianza}")
-                            suma_cuadrados = sum((x - media) ** 2 for x in poblacion)
-                            varianza = suma_cuadrados/len(poblacion)
-                            print(f"[*] La varianza de la poblacion es: {varianza}")
-                            existe_varianza = True
-                            time.sleep(5)
-                        else:
-                            if existe_pob:
-                                suma_cuadrados = sum((x - media) ** 2 for x in poblacion)
-                                varianza = suma_cuadrados/len(poblacion)
+                        #poblacion_var = set(poblacion)
 
-                                print(f"[*] La varianza de la poblacion es: {varianza}")
-                                print(f"[!] No existe un valor para muestra. Agregalo en el menú principal.")
+                        if existe_pob and existe_muestra:
+                            pass
+                            #repeticiones_poblacion, frecuencias_poblacion = calcular_repeticiones(poblacion)
+                            #varianza_poblacion = calcular_varianza_ponderada(poblacion, frecuencias_poblacion)
+                           # if existe_muestra:
+                           #     repeticiones_muestra, frecuencias_muestra = calcular_repeticiones(muestra)
+                           #     varianza_muestra = calcular_varianza_ponderada(muestra, frecuencias_muestra)
+                           #     print(f"[*] La varianza de la muestra es: {varianza_muestra}")
+                           # else:
+                          #      print("[!] La muestra no está definida.")
+
+                          #  print(f"[*] La varianza de la poblacion es: {varianza_poblacion}")
+                          #  existe_varianza = True
+                           # time.sleep(5)
+                        else:
+                            if existe_pob: 
+                                #repeticiones_poblacion, frecuencias_poblacion = calcular_repeticiones(poblacion)
+                                #varianza_poblacion = calcular_varianza_ponderada(poblacion, frecuencias_poblacion)
+                                Desviacion_estandar = statistics.stdev(poblacion)
+                                varianza_poblacion = Desviacion_estandar ** 2
+                                print(f"[*] La varianza de la poblacion es: {varianza_poblacion}")
+                                #print(f"[!] No existe un valor para muestra. Agregalo en el menú principal.")
                                 existe_varianza = True
                                 time.sleep(5)
                             else:
@@ -217,20 +269,56 @@ while True:
                         print("\n[+] Opción 2: Desviación estandar")
                         print("--------------------------------------------------------\n")
                         if existe_varianza:
-                            print(varianza)
-                            Desviacion_estandar = varianza ** 0.5
+                            Desviacion_estandar = varianza_poblacion ** 0.5
                             print(f"[*] La desviación estandar es: {Desviacion_estandar}")
+                            time.sleep(4)
                         else:
                             print("[!] No existe un valor al cual calcular la desviación estandar")
+                            time.sleep(3)
 
                     else:
                         print(f"[!] No hay una opción determinada para {submenu2}")
+                        time.sleep(4)
                 else:
                     if submenu2 == '0':
                         print("[!] Saliendo al menú...")
                         time.sleep(2)
                         break
                     print(f"[!] No hay una opción determinada para {submenu2}")
+        elif opcion == '10':
+            print("\n[+] Opción 10: Ingresar el nombre de la variable")
+            print("---------------------------------------------------\n")
+
+            nombre_var = input("[*] Ingresa el nombre de la variable: ")
+            existe_name_var = True
+        elif opcion == '11':
+            print("\n[+] Opción 11: Resumen")
+            print("---------------------------------------------------\n")
+
+            if existe_pob and existe_var and existe_varianza and existe_tabla or existe_muestra:
+
+                print("[*] Resumen...\n")
+                print(f"[+] Nombre de la variable: {nombre_var}\n")
+                print(f"[+] El tipo de variable es: {var}: {espe}\n")
+                print(f"[+] Los valores de la poblacion: {poblacion}")
+                if existe_muestra:
+                    print(f"[+] Los valores que se utilizan como muestra: {muestra}")
+                time.sleep(2)
+                print(f"[+] Mostrando la tabla de frecuencia...\n")
+                calcular_y_mostrar_tabla(poblacion)                
+                print("\n")
+                time.sleep(5)
+                print(f"[+] La media es: {media}")
+                print(f"[+] La mediana es: {mediana}")
+                print(f"[+] La moda es: {moda}")
+                print(f"[+] La varianza es: {varianza_poblacion}")
+                print(f"[]")
+                print(f"[+] La desviación estandar es: {Desviacion_estandar}")
+                time.sleep(2)
+            else: 
+                print("[!] Debes pasar por todos los modulos para obtener el resumen")
+                time.sleep(1)
+
         else:
             print(f"[!] No hay una opción determinada para {opcion}")
             time.sleep(4)
